@@ -101,6 +101,6 @@ app.post("/login", (req, res) => {
 });
 
 // listen for requests :)
-const listener = app.listen(process.env.port, () => {
-  console.log("Your app is listening on port " + process.env.port);
+const listener = app.listen(process.env.PORT || 5000, () => {
+  console.log("Your app is listening on port " + process.env.PORT || 5000);
 });
