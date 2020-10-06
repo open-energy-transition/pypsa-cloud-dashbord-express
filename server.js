@@ -5,8 +5,7 @@ const app = express();
 const mongodb = require("mongodb").MongoClient;
 const cors = require("cors");
 
-const dbUrl =
-  "mongodb+srv://rohit267:good%40bye267@cluster0.u2mqy.mongodb.net/test?authSource=admin&replicaSet=atlas-hg9sk4-shard-0&readPreference=primary&appname=Glitch&ssl=true";
+const dbUrl =process.env.DBURL;
 
 app.use(cors());
 
