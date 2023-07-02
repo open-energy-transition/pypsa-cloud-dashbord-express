@@ -38,7 +38,7 @@ const uploadConfig = (file, user, order_id, file_name) =>
   new Promise((resolve, reject) => {
     const { originalname, buffer } = file;
 
-    const filepath = `${user.id}/${order_id}/${file_name}.yaml`;
+    const filepath = `${user.id}/${order_id}/configs/${file_name}.yaml`;
     console.log(user);
     const blob = bucket.file(filepath);
     const blobStream = blob.createWriteStream({
