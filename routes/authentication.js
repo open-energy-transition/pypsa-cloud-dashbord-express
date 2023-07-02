@@ -9,7 +9,7 @@ router.get(
   "/google",
   passport.authenticate("google", { scope: ["email", "profile"] })
 );
-const baseFrontendUrl = process.env.FRONTEND_URL;
+const baseFrontendUrl = process.env.BASE_FRONTEND_URL;
 
 router.get(
   "/google/callback",
@@ -23,7 +23,7 @@ router.get(
       process.env.jwt_secret_key
     );
     console.log(token);
-    res.redirect(`${baseFrontendUrl}?token=${token}`);
+    res.redirect(`${baseFrontendUrl}/verify?token=${token}`);
   }
 );
 

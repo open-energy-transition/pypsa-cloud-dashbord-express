@@ -16,7 +16,7 @@ const DB = require("./controller/database"); // INITILIZE DATABASE
 const User = require("./models/users"); // USER MODEL
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    origin: [process.env.BASE_FRONTEND_URL],
     credentials: true,
   })
 );

@@ -3,9 +3,14 @@ const path = require("path");
 const serviceKey = path.join(__dirname, "./keys.json");
 
 const { Storage } = Cloud;
+
+// const storage = new Storage({
+//   keyFilename: serviceKey,
+//   projectId: "crucial-oven-386720",
+// });
 const storage = new Storage({
-  keyFilename: serviceKey,
   projectId: "crucial-oven-386720",
+  credentials: JSON.parse(process.env.GCP_KEY),
 });
 
 module.exports = storage;
