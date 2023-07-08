@@ -3,6 +3,7 @@ const passport = require("passport");
 const Razorpay = require("razorpay");
 const Jobs = require("../models/Jobs");
 const crypto = require("crypto");
+var ObjectId = require("mongoose").Types.ObjectId;
 
 const router = express.Router();
 
@@ -18,11 +19,12 @@ async function generateAndUpdateOrderId(jobId, amount) {
   };
   const order = await instance.orders.create(options);
 
-  await Jobs.findByIdAndUpdate(
-    jobId,
+  const d0c = await Jobs.findOneAndUpdate(
+    { _id: jobId },
     { order_id: order.id },
-    { new: true, overwrite: true }
+    { new: true }
   );
+  // console.log("doc", d0c);
 
   return order;
 }
@@ -32,11 +34,10 @@ router.get(
   passport.authenticate("jwt_strategy", { session: false }),
   //   calculate cost here
   async (req, res, next) => {
-    console.log("getCost");
     try {
       const cost = 400;
 
-      const orderObj = await generateAndUpdateOrderId(req.query.jobId, cost);
+      const orderObj = await generateAndUpdateOrderId(req.query.job_id, cost);
 
       res
         .status(200)
@@ -65,7 +66,7 @@ const paymentVerification = async (req, res) => {
   if (isAuthentic) {
     // Database comes here
 
-    await Jobs.findOneAndUpdate(
+    await Jobs.updateOne(
       { order_id: razorpay_order_id },
       {
         status: "solving",

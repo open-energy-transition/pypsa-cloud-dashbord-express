@@ -8,6 +8,7 @@ const passport = require("passport");
 const googleAuth = require("./routes/authentication");
 const formData = require("express-form-data");
 const uploadRouter = require("./routes/gcp_upload");
+const downloadRouter = require("./routes/gcp_download");
 
 require("./controller/controller.tokenJWT");
 
@@ -51,5 +52,7 @@ app.use("/payment", require("./routes/payment"));
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
+
+app.use("/download", downloadRouter);
 
 app.listen(port, () => console.log(`SERVER listening on port ${port}!`));

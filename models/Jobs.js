@@ -29,6 +29,15 @@ const Jobs = new mongoose.Schema({
     type: String,
     default: "incomplete",
   },
+  order_id: {
+    type: String,
+  },
+  payment_id: {
+    type: String,
+  },
+  payment_signature: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("Jobs", Jobs);

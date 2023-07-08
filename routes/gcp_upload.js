@@ -7,6 +7,7 @@ const gcp_storage = require("../config/index");
 const error = require("mongoose/lib/error");
 const bucket = gcp_storage.bucket("payment-dashboard");
 const Jobs = require("../models/Jobs");
+var ObjectId = require("mongoose").Types.ObjectId;
 
 router.post(
   "/name",
@@ -56,6 +57,23 @@ const uploadConfig = (file, user, order_id, file_name) =>
       .end(buffer);
   });
 
+async function updatefileUploadStatus(job_id, file_name) {
+  await Jobs.updateOne({ _id: job_id }, { $set: { [file_name]: true } });
+  const jobObj = await Jobs.findById(job_id);
+  if (
+    jobObj.config === true &&
+    jobObj.bundle_config === true &&
+    jobObj.powerplantmatching_config === true
+  ) {
+    const x = await Jobs.updateOne(
+      { _id: new ObjectId(job_id) },
+      { $set: { status: "pending" } },
+      { new: true }
+    );
+    console.log("status all file", x);
+  }
+}
+
 router.post(
   "/upload/config",
   passport.authenticate("jwt_strategy", { session: false }),
@@ -70,15 +88,10 @@ router.post(
         req.query.file_name
       );
       const fname = req.query.file_name;
-      console.log(req.query);
-      const up = await Jobs.updateOne(
-        { _id: req.query.job_id },
-        { $set: { [fname]: true } }
-      );
+      await updatefileUploadStatus(req.query.job_id, fname);
       res.status(200).json({
         message: "Upload was successful",
         data: fileUrl,
-        query_return: up,
       });
     } catch (err) {
       console.log(err);
