@@ -46,6 +46,8 @@ app.use(
   }
 );
 
+app.use("/payment", require("./routes/payment"));
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
