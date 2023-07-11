@@ -8,13 +8,12 @@ const error = require("mongoose/lib/error");
 const bucket = gcp_storage.bucket("payment-dashboard");
 const Jobs = require("../models/Jobs");
 var ObjectId = require("mongoose").Types.ObjectId;
+const { submitWorkflow } = require("../controller/k8s");
 
 router.post(
   "/name",
   passport.authenticate("jwt_strategy", { session: false }),
   async (req, res, next) => {
-    console.log(req.body);
-    console.log(req.user);
     const job_obj = await Jobs.create({
       name: req.body.jobName,
       user_id: req.user._id,
@@ -51,7 +50,7 @@ const uploadConfig = (file, user, order_id, file_name) =>
         resolve(publicUrl);
       })
       .on("error", (error) => {
-        reject(err);
+        reject(error);
       })
       .end(buffer);
   });
@@ -152,7 +151,7 @@ router.get(
   "/name",
   passport.authenticate("jwt_strategy", { session: false }),
   async (req, res, next) => {
-    result = await Jobs.find({ name: req.query.jobName });
+    const result = await Jobs.find({ name: req.query.jobName });
     res.send(result);
   }
 );
@@ -161,7 +160,7 @@ router.get(
   "/userId",
   passport.authenticate("jwt_strategy", { session: false }),
   async (req, res, next) => {
-    result = await Jobs.find({ user_id: req.user._id });
+    const result = await Jobs.find({ user_id: req.user._id });
     res.send(result);
   }
 );
@@ -171,8 +170,23 @@ router.post(
   passport.authenticate("jwt_strategy", { session: false }),
   async (req, res, next) => {
     console.log(req.body);
-    result = await Jobs.deleteMany({ name: { $in: req.body.job_names } });
+    const result = await Jobs.deleteMany({ name: { $in: req.body.job_names } });
     res.send(result);
   }
 );
+
+router.post("/submitworkflow",
+  passport.authenticate("jwt_strategy", { session: false }),
+  async (req, res, next) => {
+    console.log(req.body)
+    const orderId = req.body.job_id;
+    const result = await Jobs.find({ _id: orderId });
+    console.log(result);
+    const userId = req.user._id;
+    await submitWorkflow(userId, orderId, process.env["IMAGE_ID"]);
+    res.status(200).send({})
+  })
+
+
+
 module.exports = router;

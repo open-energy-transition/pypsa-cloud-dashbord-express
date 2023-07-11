@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  labels:
+    app: backend
+  namespace: dashboard
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      serviceAccountName: backend-service-account
+      automountServiceAccountToken: false
+      containers:
+      - name: backend
+        image: europe-central2-docker.pkg.dev/crucial-oven-386720/pypsa-workflow/backend:v6
+        # command: ["sh", "-c"]
+        # args: ['sleep 1000']
+        ports:
+        - containerPort: 3001
+
+        resources:
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        envFrom:
+        - secretRef:
+            name: backend
