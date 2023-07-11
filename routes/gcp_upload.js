@@ -40,7 +40,6 @@ const uploadConfig = (file, user, order_id, file_name) =>
     const { originalname, buffer } = file;
 
     const filepath = `${user.id}/${order_id}/configs/${file_name}.yaml`;
-    console.log(user);
     const blob = bucket.file(filepath);
     const blobStream = blob.createWriteStream({
       resumable: false,
@@ -74,6 +73,32 @@ async function updatefileUploadStatus(job_id, file_name) {
   }
 }
 
+async function copyDefaultConfig(user_id, order_id, file_name) {
+  // The ID of the GCS file to copy
+  const srcFilename = `default-configs/${file_name}.yaml`;
+
+  // The ID of the GCS file to create
+
+  const destFileName = `${user_id}/${order_id}/configs/${file_name}.yaml`;
+
+  const copyDestination = bucket.file(destFileName);
+
+  const copyOptions = {
+    preconditionOpts: {
+      ifGenerationMatch: 0,
+    },
+  };
+
+  // Copies the file to the other bucket
+  const upload_result = await bucket
+    .file(srcFilename)
+    .copy(copyDestination, copyOptions);
+
+  console.log("default upload", upload_result[1].done);
+
+  return upload_result[1];
+}
+
 router.post(
   "/upload/config",
   passport.authenticate("jwt_strategy", { session: false }),
@@ -95,6 +120,30 @@ router.post(
       });
     } catch (err) {
       console.log(err);
+    }
+  }
+);
+
+router.post(
+  "/upload/config/default",
+  passport.authenticate("jwt_strategy", { session: false }),
+  async (req, res, next) => {
+    try {
+      console.log("filename", req.query);
+      const fname = req.query.file_name;
+      const status = await copyDefaultConfig(
+        req.user.id,
+        req.query.job_id,
+        fname
+      );
+      await updatefileUploadStatus(req.query.job_id, fname);
+      res.status(200).json({
+        message: "Upload was successful",
+        data: { status },
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(err.code).send(err.message);
     }
   }
 );
