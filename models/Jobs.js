@@ -6,6 +6,11 @@ const Jobs = new mongoose.Schema({
     trim: true,
     unique: true,
   },
+  pypsa_version: {
+    type: String,
+    trim: true,
+    default: "main",
+  },
   user_id: {
     type: String,
   },
