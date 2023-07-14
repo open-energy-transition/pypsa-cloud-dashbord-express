@@ -51,7 +51,7 @@ jobs:
         registry: ${{ env.registry }}
         project_id: ${{ secrets.GKE_PROJECT }}
         image_name: ${{ env.repository }}/${{ env.image_name }}
-        image_tag: ${{ needs.outputs.src_tag }},latest
+        image_tag: ${{ needs.changes.outputs.src_tag }},latest
         dockerfile: Dockerfile
 
   deploy:
