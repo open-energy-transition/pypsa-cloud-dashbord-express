@@ -6,7 +6,7 @@ metadata:
     app: backend
   namespace: dashboard
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: backend
@@ -16,12 +16,10 @@ spec:
         app: backend
     spec:
       serviceAccountName: backend-service-account
-      automountServiceAccountToken: false
       containers:
       - name: backend
-        image: europe-central2-docker.pkg.dev/crucial-oven-386720/pypsa-workflow/backend:v6
-        # command: ["sh", "-c"]
-        # args: ['sleep 1000']
+        #image: europe-central2-docker.pkg.dev/crucial-oven-386720/pypsa-workflow/backend:v6
+        image: ${_IMAGE}
         ports:
         - containerPort: 3001
 
