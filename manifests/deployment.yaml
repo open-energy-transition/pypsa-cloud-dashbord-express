@@ -6,7 +6,7 @@ metadata:
     app: backend
   namespace: dashboard
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: backend
@@ -18,7 +18,7 @@ spec:
       serviceAccountName: backend-service-account
       containers:
       - name: backend
-        image: ${_IMAGE}
+        image: 123
         ports:
         - containerPort: 3001
 
