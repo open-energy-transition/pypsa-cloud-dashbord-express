@@ -18,7 +18,6 @@ spec:
       serviceAccountName: backend-service-account
       containers:
       - name: backend
-        #image: europe-central2-docker.pkg.dev/crucial-oven-386720/pypsa-workflow/backend:v6
         image: ${_IMAGE}
         ports:
         - containerPort: 3001
