@@ -10,7 +10,7 @@ function uuidv4() {
   );
 }
 
-async function submitWorkflow(userId, orderId) {
+async function submitWorkflow(userId, orderId, pypsa_tag) {
   const kc = new k8s.KubeConfig();
   kc.loadFromDefault();
 
@@ -27,6 +27,10 @@ async function submitWorkflow(userId, orderId) {
       entrypoint: "main",
       arguments: {
         parameters: [
+          {
+            name: "pypsa_tag",
+            value: pypsa_tag,
+          },
           {
             name: "run_folder_name",
             value: `${userId}/${orderId}`,

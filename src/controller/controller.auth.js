@@ -4,7 +4,7 @@ const router = express.Router();
 const GoogleStrategy = require("passport-google-oauth2").Strategy;
 require("dotenv/config");
 const User = require("../models/users");
-require("./controller.tokenJWT");
+require("./controller.token_jwt");
 const DB = require("../controller/database");
 
 const passportConfig = {

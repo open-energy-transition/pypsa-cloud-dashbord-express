@@ -5,6 +5,5 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 
 RUN npm ci
-EXPOSE 3001
-COPY . .
+COPY src/ .
 CMD ["node", "app.js"]

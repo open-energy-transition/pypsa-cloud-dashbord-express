@@ -10,7 +10,7 @@ const formData = require("express-form-data");
 const uploadRouter = require("./routes/gcp_upload");
 const downloadRouter = require("./routes/gcp_download");
 
-require("./controller/controller.tokenJWT");
+require("./controller/controller.token_jwt");
 
 const port = process.env.PORT;
 const DB = require("./controller/database"); // INITILIZE DATABASE
