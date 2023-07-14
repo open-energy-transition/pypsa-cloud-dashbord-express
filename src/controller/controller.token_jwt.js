@@ -6,7 +6,6 @@ require("dotenv/config");
 const User = require("../models/users");
 const {
   fromExtractors,
-  fromAuthHeaderWithScheme,
   fromAuthHeaderAsBearerToken,
 } = ExtractJwt;
 
