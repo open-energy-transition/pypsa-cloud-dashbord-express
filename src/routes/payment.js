@@ -3,7 +3,6 @@ const passport = require("passport");
 const Razorpay = require("razorpay");
 const Jobs = require("../models/Jobs");
 const crypto = require("crypto");
-var ObjectId = require("mongoose").Types.ObjectId;
 
 const router = express.Router();
 
