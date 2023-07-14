@@ -20,6 +20,8 @@ jobs:
       src_tag: ${{ steps.image_tag.outputs.src_tag }}
     steps:
     - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
     - uses: dorny/paths-filter@v2
       id: changes
       with:

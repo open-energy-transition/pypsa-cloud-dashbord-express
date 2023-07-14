@@ -7,7 +7,7 @@ function uuidv4() {
     );
 }
 
-async function submitWorkflow(userId, orderId, imageName) {
+async function submitWorkflow(userId, orderId, pypsa_tag) {
     const kc = new k8s.KubeConfig();
     kc.loadFromDefault();
 
@@ -25,8 +25,8 @@ async function submitWorkflow(userId, orderId, imageName) {
             "arguments": {
             "parameters": [
                 {
-                    "name": "pypsa_image_path",
-                    "value": imageName
+                    "name": "pypsa_tag",
+                    "value": pypsa_tag
                 },
                 {
                     "name": "run_folder_name",
