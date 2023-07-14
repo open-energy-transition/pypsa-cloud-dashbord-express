@@ -76,7 +76,13 @@ const paymentVerification = async (req, res) => {
       },
       { new: true }
     );
-    submitWorkflow.submitWorkflow(jobObj.user_id, jobObj.order_id);
+
+    // start solving
+    submitWorkflow.submitWorkflow(
+      jobObj.user_id,
+      jobObj.order_id,
+      jobObj.pypsa_version
+    );
 
     const baseUrl = process.env.BASE_FRONTEND_URL;
 

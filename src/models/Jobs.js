@@ -29,7 +29,7 @@ const Jobs = new mongoose.Schema({
   // incomplete: not all configs present
   // pending: all configs present, but not paid
   // solving: paid and solving
-  // complete:veiw results
+  // complete: veiw results
   status: {
     type: String,
     default: "incomplete",
