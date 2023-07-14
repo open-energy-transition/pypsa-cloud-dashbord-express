@@ -32,6 +32,7 @@ jobs:
             - 'manifests/**'
     - id: image_tag
       run: |
+        echo git log
         last_src_commit=$(git log -n 1 --pretty=format:%H -- src)
         pypsa_builder_hash=$(git rev-parse --short last_src_commit)
         echo src_tag=$pypsa_builder_hash >> $GITHUB_OUTPUT
