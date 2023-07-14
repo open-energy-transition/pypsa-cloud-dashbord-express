@@ -39,9 +39,6 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    outputs:
-      src_tag: ${{ needs.changes.outputs.src_tag }}
-      manifests_changed: ${{ needs.changes.outputs.manifests_changed }}
     if: ${{ needs.changes.outputs.should_build == 'true' }}
     needs: changes
     steps:
@@ -58,8 +55,10 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build
-    if: ${{ always() && (needs.build.outputs.manifests_changed == 'true' || needs.build.result == 'success') }} 
+    needs: 
+    - build
+    - changes
+    if: ${{ always() && (needs.build.changes.manifests_changed == 'true' || needs.changes.result == 'success') }} 
     steps:
     - uses: actions/checkout@v3
     - id: 'auth'
@@ -72,6 +71,6 @@ jobs:
         location: ${{ secrets.GKE_ZONE }}
     - name: Deploy newest image to GKE
       run: |
-        sed 's,${_IMAGE},${{ env.registry }}/${{ env.repository }}/${{ env.image_name }}:${{ needs.build.outputs.src_tag }},g' \
+        sed 's,${_IMAGE},${{ env.registry }}/${{ env.repository }}/${{ env.image_name }}:${{ needs.changes.outputs.src_tag }},g' \
           manifests/deployment.yaml.tmpl > manifests/deployment.yaml
         kubectl apply -f manifests
