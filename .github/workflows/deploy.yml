@@ -72,6 +72,6 @@ jobs:
         location: ${{ secrets.GKE_ZONE }}
     - name: Deploy newest image to GKE
       run: |
-        sed 's,${_IMAGE},${{ env.registry }}/${{ env.repository }}/${{ env.image_name }}:${{ needs.changes.outputs.src_tag }},g' \
+        sed 's,${_IMAGE},${{ secrets.GKE_PROJECT }}/${{ env.registry }}/${{ env.repository }}/${{ env.image_name }}:${{ needs.changes.outputs.src_tag }},g' \
           manifests/deployment.yaml.tmpl > manifests/deployment.yaml
         kubectl apply -f manifests
