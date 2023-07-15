@@ -36,7 +36,6 @@ app.use(
   "/getDetails",
   passport.authenticate("jwt_strategy", { session: false }),
   (req, res) => {
-    console.log("yess");
     console.log(req.user);
     const body = {
       email: req.user.email,

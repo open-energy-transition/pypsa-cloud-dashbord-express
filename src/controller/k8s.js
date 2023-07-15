@@ -64,7 +64,7 @@ async function submitWorkflow(userId, orderId, pypsa_tag) {
     },
   };
 
-  console.log("Deploying workflow ", body)
+  console.log("Deploying workflow ", JSON.stringify(body, {space: 4}))
   await k8sApi.createNamespacedCustomObject(
     "argoproj.io",
     "v1alpha1",

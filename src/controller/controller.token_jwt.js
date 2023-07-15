@@ -12,8 +12,8 @@ const {
 function cookieExtractor(req) {
   var token = null;
   console.log("cookieextractor ran");
-  console.log(req.cookies);
   if (req && req.cookies) {
+    console.log("cookieextractor ran and found cookie");
     token = req.cookies["jwt"];
   }
   return token;
@@ -31,8 +31,6 @@ passport.use(
       jwtCookieName: "jwt",
     },
     (payload, done) => {
-      console.log("payload");
-      console.log(payload);
       User.findById(String(payload.id), (err, user) => {
         if (err) {
           return done(err, false);
