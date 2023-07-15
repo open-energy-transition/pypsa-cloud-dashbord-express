@@ -4,6 +4,8 @@ const Razorpay = require("razorpay");
 const Jobs = require("../models/Jobs");
 const crypto = require("crypto");
 
+const submitWorkflow = require("../controller/k8s");
+
 const router = express.Router();
 
 const instance = new Razorpay({
@@ -65,13 +67,21 @@ const paymentVerification = async (req, res) => {
   if (isAuthentic) {
     // Database comes here
 
-    await Jobs.updateOne(
+    const jobObj = await Jobs.findOneAndUpdate(
       { order_id: razorpay_order_id },
       {
         status: "solving",
         payment_id: razorpay_payment_id,
         payment_signature: razorpay_signature,
-      }
+      },
+      { new: true }
+    );
+
+    // start solving
+    submitWorkflow.submitWorkflow(
+      jobObj.user_id,
+      jobObj.order_id,
+      jobObj.pypsa_version
     );
 
     const baseUrl = process.env.BASE_FRONTEND_URL;

@@ -7,10 +7,12 @@ const User = require("../models/users");
 require("./controller.token_jwt");
 const DB = require("../controller/database");
 
+const base_backend = process.env.BASE_BACKEND_URL;
+
 const passportConfig = {
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: "http://localhost:3001/auth/google/callback",
+  callbackURL: `${base_backend}/auth/google/callback`,
   passReqToCallback: true,
 };
 

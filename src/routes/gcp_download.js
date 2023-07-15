@@ -30,8 +30,7 @@ router.get(
   async (req, res, next) => {
     console.log("getResults");
     const [contents] = await bucket.getFiles({
-      prefix:
-        "649b3bafc4b9a410245af349/64a0735f5e90f44afc7ecd83/solved-networks/",
+      prefix: `${req.user.id}/${req.query.job_id}/solved-networks/`,
     });
     const result_names = [];
     const promiseArr = contents.map((val) => {

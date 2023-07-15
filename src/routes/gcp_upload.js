@@ -22,6 +22,28 @@ router.post(
   }
 );
 
+router.post(
+  "/version",
+  passport.authenticate("jwt_strategy", { session: false }),
+  async (req, res, next) => {
+    // const job_obj = await Jobs.updateOne({
+    //   name: req.body.jobName,
+    // });
+    try {
+      const job_id = req.body.job_id;
+      const version = req.body.pypsa_ver;
+      const x = await Jobs.updateOne(
+        { _id: job_id },
+        { $set: { pypsa_version: version } },
+        { new: true }
+      );
+      res.send(200, x);
+    } catch {
+      res.send(new error("couldnt change version"));
+    }
+  }
+);
+
 const multerMid = multer({
   storage: multer.memoryStorage({
     filename: (req, file, cb) => {
@@ -175,18 +197,18 @@ router.post(
   }
 );
 
-router.post("/submitworkflow",
+router.post(
+  "/submitworkflow",
   passport.authenticate("jwt_strategy", { session: false }),
   async (req, res, next) => {
-    console.log(req.body)
+    console.log(req.body);
     const orderId = req.body.job_id;
     const result = await Jobs.find({ _id: orderId });
     console.log(result);
     const userId = req.user._id;
     await submitWorkflow(userId, orderId, process.env["IMAGE_ID"]);
-    res.status(200).send({})
-  })
-
-
+    res.status(200).send({});
+  }
+);
 
 module.exports = router;
