@@ -14,9 +14,8 @@ async function updateVersion(job_id, version) {
   return job;
 }
 
-function uploadFile(buffer, file_name) {
+function uploadFile(buffer, filepath) {
   return new Promise((resolve, reject) => {
-    const filepath = `${user.id}/${order_id}/configs/${file_name}.yaml`;
     const blob = bucket.file(filepath);
     const blobStream = blob.createWriteStream({
       resumable: false,
