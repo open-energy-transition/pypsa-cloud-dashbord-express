@@ -16,6 +16,7 @@ async function updateVersion(job_id, version) {
 
 function uploadFile(buffer, filepath) {
   return new Promise((resolve, reject) => {
+    console.log("uploadig file", filepath);
     const blob = bucket.file(filepath);
     const blobStream = blob.createWriteStream({
       resumable: false,
