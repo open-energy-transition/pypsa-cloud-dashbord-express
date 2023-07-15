@@ -23,7 +23,10 @@ router.get(
       process.env.jwt_secret_key
     );
     console.log(token);
-    res.redirect(`${baseFrontendUrl}/verify?token=${token}`);
+    res.cookie('jwt', token, {
+      httpOnly: true,
+      secure: true
+    }).redirect(`${baseFrontendUrl}/dashboard`);
   }
 );
 
