@@ -4,9 +4,10 @@ metadata:
   name: backend-service
   namespace: dashboard
 spec:
-  type: LoadBalancer
+  type: NodePort
   ports:
   - port: 80
     targetPort: 3001
   selector:
     app: backend
+
