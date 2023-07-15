@@ -3,7 +3,6 @@ const gcp_storage = require("../config/index");
 const bucket = gcp_storage.bucket(process.env.STORAGE_BUCKET || "payment-dashboard");
 
 async function updateVersion(job_id, version) {
-  const version = req.body.pypsa_ver;
   const job = await Jobs.findOneAndUpdate(
     { _id: job_id },
     { $set: { pypsa_version: version } },

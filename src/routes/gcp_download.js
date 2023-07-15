@@ -27,7 +27,7 @@ router.get(
     const prefix = `${req.user.id}/${req.query.job_id}/solved-networks/`
     const [blobDetails] = await gcpController.getFiles(prefix);
     const blobNames = blobDetails.map(val => val.name);
-    const results = await Promise.all(gcpController.downloadFiles(blobNames));
+    const results = await gcpController.downloadFiles(blobNames);
     const zip = new AdmZip();
     for (const result of results) {
       zip.addFile(result.name, result.file);
