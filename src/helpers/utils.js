@@ -1,4 +1,5 @@
 const { downloadFile } = require("./gcp");
+const yaml = require("yaml");
 
 async function calculateCost(userId, jobId) {
   const configPath = `${userId}/${jobId}/configs/config.yaml`;

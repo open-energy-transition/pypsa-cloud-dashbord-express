@@ -40,7 +40,6 @@ router.get(
       const cost = await calculateCost(req.user.id, req.query.job_id);
       console.log(`cost of job ${req.query.job_id} is ${cost} `);
       const orderObj = await generateAndUpdateOrderId(req.query.job_id, cost);
-
       res
         .status(200)
         .send({ order_obj: orderObj, rozor_key: process.env.RAZORPAY_API_KEY });
