@@ -14,8 +14,8 @@ async function updateVersion(job_id, version) {
   return job;
 }
 
-const uploadFile = (buffer, file_name) =>
-  new Promise((resolve, reject) => {
+function uploadFile(buffer, file_name) {
+  return new Promise((resolve, reject) => {
 
     const filepath = `${user.id}/${order_id}/configs/${file_name}.yaml`;
     const blob = bucket.file(filepath);
@@ -32,6 +32,7 @@ const uploadFile = (buffer, file_name) =>
       })
       .end(buffer);
   });
+}
 
 async function updatefileUploadStatus(job_id, file_name) {
   await Jobs.updateOne({ _id: job_id }, { $set: { [file_name]: true } });
@@ -76,10 +77,32 @@ async function copyDefaultConfig(user_id, order_id, file_name) {
   return upload_result[1];
 }
 
+async function downloadFile(file_name) {
+    console.log("Downloading file", file_name);
+    return await bucket.file(file_name).download();
+}
+
+async function downloadFiles(file_prefixes) {
+    return await Promise.all(file_prefixes.map(filePrefix => async() => {
+    const data = downloadFile(filePrefix);
+      return {
+        name: filePrefix.split("/").at(-1),
+        file: data
+      };
+    }));
+}
+
+async function getFiles(prefix) {
+    return await bucket.getFiles({ prefix: prefix });
+}
+
 
 module.exports = {
     updateVersion,
     uploadFile,
     updatefileUploadStatus,
-    copyDefaultConfig
+    copyDefaultConfig,
+    downloadFile,
+    downloadFiles,
+    getFiles
 }

@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const gcp_storage = require("../config/index");
-const bucket = gcp_storage.bucket("payment-dashboard");
+const gcpController = require("../controller/gcp");
 const AdmZip = require("adm-zip");
 
 router.get(
@@ -14,7 +14,7 @@ router.get(
     const order_id = req.query.job_id;
     const file_name = req.query.file_name;
     const filepath = `${user_id}/${order_id}/configs/${file_name}.yaml`;
-    const contents = await bucket.file(filepath).download();
+    const contents = await gcpController.downloadFile(filepath);
     res.send(contents);
   }
 );
@@ -22,27 +22,18 @@ router.get(
 router.get(
   "/getResults",
   passport.authenticate("jwt_strategy", { session: false }),
-  async (req, res, next) => {
+  async (req, res) => {
     console.log("getResults");
-    const [contents] = await bucket.getFiles({
-      prefix: `${req.user.id}/${req.query.job_id}/solved-networks/`,
-    });
-    const result_names = [];
-    const promiseArr = contents.map((val) => {
-      return new Promise((resolve, reject) => {
-        let data = bucket.file(val.name).download();
-        result_names.push(val.name.split("/").at(-1));
-        resolve(data);
-      });
-    });
-    Promise.all(promiseArr).then((val) => {
-      const zip = new AdmZip();
-      val.forEach((v, i) => {
-        zip.addFile(result_names.at(i), v[0]);
-      });
-      const zip_buffer = zip.toBuffer();
-      res.send({ val, result_names, zip_buffer });
-    });
+    const prefix = `${req.user.id}/${req.query.job_id}/solved-networks/`
+    const [blobDetails] = await gcpController.getFiles(prefix);
+    const blobNames = blobDetails.map(val => val.name);
+    const results = await Promise.all(gcpController.downloadFiles(blobNames));
+    const zip = new AdmZip();
+    for (const result of results) {
+      zip.addFile(result.name, result.file);
+    }
+    const zip_buffer = zip.toBuffer();
+    res.send({ zip_buffer });
   }
 );
 
