@@ -20,7 +20,7 @@ async function generateAndUpdateOrderId(jobId, amount) {
   };
   const order = await instance.orders.create(options);
 
-  const d0c = await Jobs.findOneAndUpdate(
+  await Jobs.findOneAndUpdate(
     { _id: jobId },
     { order_id: order.id },
     { new: true }
