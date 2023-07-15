@@ -1,6 +1,8 @@
 const Jobs = require("../models/Jobs");
 const gcp_storage = require("../config/index");
-const bucket = gcp_storage.bucket(process.env.STORAGE_BUCKET || "payment-dashboard");
+const bucket = gcp_storage.bucket(
+  process.env.STORAGE_BUCKET || "payment-dashboard"
+);
 
 async function updateVersion(job_id, version) {
   const job = await Jobs.findOneAndUpdate(
@@ -14,7 +16,6 @@ async function updateVersion(job_id, version) {
 
 function uploadFile(buffer, file_name) {
   return new Promise((resolve, reject) => {
-
     const filepath = `${user.id}/${order_id}/configs/${file_name}.yaml`;
     const blob = bucket.file(filepath);
     const blobStream = blob.createWriteStream({
@@ -76,31 +77,35 @@ async function copyDefaultConfig(user_id, order_id, file_name) {
 }
 
 async function downloadFile(file_name) {
-    console.log("Downloading file", file_name);
-    return await bucket.file(file_name).download();
+  console.log("Downloading file", file_name);
+  const file = await bucket.file(file_name).download();
+  return file[0];
 }
 
 async function downloadFiles(file_prefixes) {
-    return await Promise.all(file_prefixes.map(filePrefix => async() => {
-    const data = downloadFile(filePrefix);
+  const files = await Promise.all(
+    file_prefixes.map(async (filePrefix) => {
+      const data = await downloadFile(filePrefix);
+      console.log("downloaded file", filePrefix);
       return {
         name: filePrefix.split("/").at(-1),
-        file: data
+        file: data,
       };
-    }));
+    })
+  );
+  return files;
 }
 
 async function getFiles(prefix) {
-    return await bucket.getFiles({ prefix: prefix });
+  return await bucket.getFiles({ prefix: prefix });
 }
-
 
 module.exports = {
-    updateVersion,
-    uploadFile,
-    updatefileUploadStatus,
-    copyDefaultConfig,
-    downloadFile,
-    downloadFiles,
-    getFiles
-}
+  updateVersion,
+  uploadFile,
+  updatefileUploadStatus,
+  copyDefaultConfig,
+  downloadFile,
+  downloadFiles,
+  getFiles,
+};

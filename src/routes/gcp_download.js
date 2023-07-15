@@ -24,12 +24,16 @@ router.get(
   passport.authenticate("jwt_strategy", { session: false }),
   async (req, res) => {
     console.log("getResults");
-    const prefix = `${req.user.id}/${req.query.job_id}/solved-networks/`
-    const [blobDetails] = await gcpController.getFiles(prefix);
-    const blobNames = blobDetails.map(val => val.name);
+    // const prefix = `${req.user.id}/${req.query.job_id}/solved-networks/`
+    const prefix = `solved-networks/`;
+
+    const [contents] = await gcpController.getFiles(prefix);
+    const blobNames = contents.map((val) => val.name);
+    console.log("blobnames to download", blobNames);
     const results = await gcpController.downloadFiles(blobNames);
     const zip = new AdmZip();
     for (const result of results) {
+      console.log(result.name, "zipped");
       zip.addFile(result.name, result.file);
     }
     const zip_buffer = zip.toBuffer();
