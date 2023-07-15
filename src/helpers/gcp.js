@@ -41,6 +41,7 @@ async function updatefileUploadStatus(job_id, file_name) {
     jobObj.bundle_config === true &&
     jobObj.powerplantmatching_config === true
   ) {
+    // const cost = await getCosts(jobObj.user_id, job_id);
     const x = await Jobs.updateOne(
       { _id: new ObjectId(job_id) },
       { $set: { status: "pending" } },
@@ -48,6 +49,15 @@ async function updatefileUploadStatus(job_id, file_name) {
     );
     console.log("status all file", x);
   }
+}
+
+async function getCosts(userId, jobId) {
+  const job = await Jobs.findById(job_id);
+  const configPath = `${userId}/${jobId}/configs/config.yaml`;
+  const file = await downloadFile(configPath);
+  const config = yaml.load(file);
+
+  return job.costs;
 }
 
 async function copyDefaultConfig(user_id, order_id, file_name) {
