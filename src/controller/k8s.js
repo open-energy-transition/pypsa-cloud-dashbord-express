@@ -24,6 +24,7 @@ async function submitWorkflow(userId, orderId, pypsa_tag) {
       namespace: "default"
     },
     spec: {
+      onExit: "update-order-status",
       serviceAccountName: "pypsa-argo",
       entrypoint: "main",
       arguments: {
@@ -61,6 +62,21 @@ async function submitWorkflow(userId, orderId, pypsa_tag) {
             ],
           ],
         },
+        {
+          name: "update-order-status",
+          steps: [
+            [
+              {
+                name: "update-order-status",
+                templateRef: {
+                  name: "pypsa-workflow-template",
+                  template: "update-order-mongo"
+                }
+              }
+            ]
+          ]
+
+        }
       ],
     },
   };
