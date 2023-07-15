@@ -65,7 +65,12 @@ const paymentVerification = async (req, res) => {
   console.log(req.body, isAuthentic, "paymentVerification");
 
   if (isAuthentic) {
-    // Database comes here
+    // start solving
+    submitWorkflow.submitWorkflow(
+      jobObj.user_id,
+      jobObj.order_id,
+      jobObj.pypsa_version
+    );
 
     const jobObj = await Jobs.findOneAndUpdate(
       { order_id: razorpay_order_id },
@@ -77,12 +82,6 @@ const paymentVerification = async (req, res) => {
       { new: true }
     );
 
-    // start solving
-    submitWorkflow.submitWorkflow(
-      jobObj.user_id,
-      jobObj.order_id,
-      jobObj.pypsa_version
-    );
 
     const baseUrl = process.env.BASE_FRONTEND_URL;
 
