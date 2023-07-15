@@ -1,5 +1,5 @@
 const Jobs = require("../models/Jobs");
-
+const gcp_storage = require("../config/index");
 const bucket = gcp_storage.bucket(process.env.STORAGE_BUCKET || "payment-dashboard");
 
 async function updateVersion(job_id, version) {

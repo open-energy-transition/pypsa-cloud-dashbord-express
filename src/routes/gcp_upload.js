@@ -1,20 +1,28 @@
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
-const formData = require("express-form-data");
 const multer = require("multer");
-const gcp_storage = require("../config/index");
 const error = require("mongoose/lib/error");
-const bucket = gcp_storage.bucket("payment-dashboard");
 const Jobs = require("../models/Jobs");
 const gcpController = require("../controller/gcp");
-var ObjectId = require("mongoose").Types.ObjectId;
-const { submitWorkflow } = require("../controller/k8s");
+
+const multerMid = multer({
+  storage: multer.memoryStorage({
+    filename: (req, _, cb) => {
+      //call the callback, passing it the original file name
+      cb(null, req.query.file_name);
+    },
+  }),
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+  },
+});
+
 
 router.post(
   "/name",
   passport.authenticate("jwt_strategy", { session: false }),
-  async (req, res, next) => {
+  async (req, res) => {
     const job_obj = await Jobs.create({
       name: req.body.jobName,
       user_id: req.user._id,
@@ -36,17 +44,6 @@ router.post(
   }
 );
 
-const multerMid = multer({
-  storage: multer.memoryStorage({
-    filename: (req, file, cb) => {
-      //call the callback, passing it the original file name
-      cb(null, req.query.file_name);
-    },
-  }),
-  limits: {
-    fileSize: 5 * 1024 * 1024,
-  },
-});
 
 
 router.post(
@@ -100,7 +97,7 @@ router.post(
 router.get(
   "/name",
   passport.authenticate("jwt_strategy", { session: false }),
-  async (req, res, next) => {
+  async (req, res) => {
     const result = await Jobs.find({ name: req.query.jobName });
     res.send(result);
   }
@@ -109,7 +106,7 @@ router.get(
 router.get(
   "/userId",
   passport.authenticate("jwt_strategy", { session: false }),
-  async (req, res, next) => {
+  async (req, res) => {
     const result = await Jobs.find({ user_id: req.user._id });
     res.send(result);
   }
@@ -118,7 +115,7 @@ router.get(
 router.post(
   "/name/delete",
   passport.authenticate("jwt_strategy", { session: false }),
-  async (req, res, next) => {
+  async (req, res) => {
     const result = await Jobs.deleteMany({ name: { $in: req.body.job_names } });
     res.send(result);
   }
