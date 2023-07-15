@@ -26,12 +26,15 @@ jobs:
         filters: |
           should_build:
             - 'src/**'
+            - Dockerfile
+            - package.json
+            - package-lock.json
           manifests_changed:
             - 'manifests/**'
             - '.github/workflows/deploy.yml'
     - id: image_tag
       run: |
-        last_src_commit=$(git log -n 1 --pretty=format:%H -- src)
+        last_src_commit=$(git log -n 1 --pretty=format:%H -- src package.json package-lock.json Dockerfile)
         pypsa_builder_hash=$(git rev-parse --short $last_src_commit)
         echo src_tag=$pypsa_builder_hash
         echo src_tag=$pypsa_builder_hash >> $GITHUB_OUTPUT
@@ -58,7 +61,7 @@ jobs:
     needs: 
     - build
     - changes
-    if: ${{ always() && (needs.build.changes.manifests_changed == 'true' || needs.changes.result == 'success') }} 
+    if: ${{ always() && ((needs.build.changes.manifests_changed == 'true' && needs.build.result == 'skipped' ) || needs.build.result == 'success' ) }}
     steps:
     - uses: actions/checkout@v3
     - id: 'auth'

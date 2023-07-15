@@ -38,6 +38,7 @@ router.get(
   async (req, res) => {
     try {
       const cost = await calculateCost(req.user.id, req.query.job_id);
+      console.log(`cost of job ${req.query.job_id} is ${cost} `);
       const orderObj = await generateAndUpdateOrderId(req.query.job_id, cost);
 
       res
