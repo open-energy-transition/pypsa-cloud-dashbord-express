@@ -4,7 +4,7 @@ const passport = require("passport");
 const multer = require("multer");
 const error = require("mongoose/lib/error");
 const Jobs = require("../models/Jobs");
-const gcpController = require("../controller/gcp");
+const gcpHelpers = require("../helpers/gcp");
 
 const multerMid = multer({
   storage: multer.memoryStorage({
@@ -36,7 +36,7 @@ router.post(
   passport.authenticate("jwt_strategy", { session: false }),
   async (req, res, next) => {
     try {
-      const job = await gcpController.updateVersion(req.body.job_id, req.body.pypsa_ver);
+      const job = await gcpHelpers.updateVersion(req.body.job_id, req.body.pypsa_ver);
       res.send(200, job);
     } catch {
       res.status(501).send(new error({ error: "Request falied", code: 501 }));
@@ -54,12 +54,12 @@ router.post(
     try {
       const file = req.files[0];
       const { _, buffer } = file;
-      const fileUrl = await gcpController.uploadFile(
+      const fileUrl = await gcpHelpers.uploadFile(
         buffer,
         `${req.user}/${req.query/job_id}/configs/${req.query.file_name}.yaml`
       );
       const fname = req.query.file_name;
-      await gcpController.updatefileUploadStatus(req.query.job_id, fname);
+      await gcpHelpers.updatefileUploadStatus(req.query.job_id, fname);
       res.status(200).json({
         message: "Upload was successful",
         data: fileUrl,
@@ -77,12 +77,12 @@ router.post(
     try {
       console.log("filename", req.query);
       const fname = req.query.file_name;
-      const status = await gcpController.copyDefaultConfig(
+      const status = await gcpHelpers.copyDefaultConfig(
         req.user.id,
         req.query.job_id,
         fname
       );
-      await gcpController.updatefileUploadStatus(req.query.job_id, fname);
+      await gcpHelpers.updatefileUploadStatus(req.query.job_id, fname);
       res.status(200).json({
         message: "Upload was successful",
         data: { status },

@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const gcp_storage = require("../config/index");
-const gcpController = require("../controller/gcp");
+const gcpController = require("../helpers/gcp");
 const AdmZip = require("adm-zip");
 
 router.get(
