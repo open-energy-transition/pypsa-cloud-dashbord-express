@@ -24,9 +24,7 @@ router.get(
   passport.authenticate("jwt_strategy", { session: false }),
   async (req, res) => {
     console.log("getResults");
-    // const prefix = `${req.user.id}/${req.query.job_id}/solved-networks/`
-    const prefix = `solved-networks/`;
-
+    const prefix = `${req.user.id}/${req.query.job_id}/solved-networks/`;
     const [contents] = await gcpController.getFiles(prefix);
     const blobNames = contents.map((val) => val.name);
     console.log("blobnames to download", blobNames);
