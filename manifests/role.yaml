@@ -4,9 +4,6 @@ metadata:
   namespace: default
   name: workflow-writer
 rules:
-- apiGroups: ["argoproj.io/v1alpha1"]
-  #
-  # at the HTTP level, the name of the resource for accessing Secret
-  # objects is "secrets"
-  resources: ["Workflow"]
+- apiGroups: ["argoproj.io"]
+  resources: ["workflows"]
   verbs: ["*"]

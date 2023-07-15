@@ -21,16 +21,14 @@ async function submitWorkflow(userId, orderId, pypsa_tag) {
     kind: "Workflow",
     metadata: {
       name: `pypsa-workflow-${uuidv4()}`,
+      namespace: "default"
     },
     spec: {
+      onExit: "update-order-status",
       serviceAccountName: "pypsa-argo",
       entrypoint: "main",
       arguments: {
         parameters: [
-          {
-            name: "pypsa_tag",
-            value: pypsa_tag,
-          },
           {
             name: "run_folder_name",
             value: `${userId}/${orderId}`,
@@ -51,14 +49,39 @@ async function submitWorkflow(userId, orderId, pypsa_tag) {
                 templateRef: {
                   name: "pypsa-workflow-template",
                   template: "pypsa-workflow",
+                  arguments: {
+                    parameters: [
+                      {
+                        name: "pypsa_tag",
+                        value: pypsa_tag,
+                      },
+                    ]
+                  }
                 },
               },
             ],
           ],
         },
+        {
+          name: "update-order-status",
+          steps: [
+            [
+              {
+                name: "update-order-status",
+                templateRef: {
+                  name: "pypsa-workflow-template",
+                  template: "update-order-mongo"
+                }
+              }
+            ]
+          ]
+
+        }
       ],
     },
   };
+
+  console.log("Deploying workflow ", JSON.stringify(body, {space: 4}))
   await k8sApi.createNamespacedCustomObject(
     "argoproj.io",
     "v1alpha1",

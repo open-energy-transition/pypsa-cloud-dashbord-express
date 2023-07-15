@@ -22,8 +22,11 @@ router.get(
       { user: { email: req.user.email }, id: req.user._id },
       process.env.jwt_secret_key
     );
-    console.log(token);
-    res.redirect(`${baseFrontendUrl}/verify?token=${token}`);
+    console.log("Got token: ", Boolean(token))
+    res.cookie('jwt', token, {
+      httpOnly: true,
+      secure: true
+    }).redirect(`${baseFrontendUrl}/dashboard`);
   }
 );
 

@@ -20,7 +20,7 @@ async function generateAndUpdateOrderId(jobId, amount) {
   };
   const order = await instance.orders.create(options);
 
-  const d0c = await Jobs.findOneAndUpdate(
+  await Jobs.findOneAndUpdate(
     { _id: jobId },
     { order_id: order.id },
     { new: true }
@@ -65,9 +65,18 @@ const paymentVerification = async (req, res) => {
   console.log(req.body, isAuthentic, "paymentVerification");
 
   if (isAuthentic) {
-    // Database comes here
 
-    const jobObj = await Jobs.findOneAndUpdate(
+    let jobObj = await Jobs.findOne(
+      { order_id: razorpay_order_id },
+    );
+    // start solving
+    submitWorkflow.submitWorkflow(
+      jobObj.user_id,
+      jobObj._id,
+      jobObj.pypsa_version
+    );
+
+    jobObj = await Jobs.findOneAndUpdate(
       { order_id: razorpay_order_id },
       {
         status: "solving",
@@ -77,12 +86,6 @@ const paymentVerification = async (req, res) => {
       { new: true }
     );
 
-    // start solving
-    submitWorkflow.submitWorkflow(
-      jobObj.user_id,
-      jobObj.order_id,
-      jobObj.pypsa_version
-    );
 
     const baseUrl = process.env.BASE_FRONTEND_URL;
 

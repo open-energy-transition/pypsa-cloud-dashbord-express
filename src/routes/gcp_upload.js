@@ -189,7 +189,6 @@ router.post(
   "/name/delete",
   passport.authenticate("jwt_strategy", { session: false }),
   async (req, res, next) => {
-    console.log(req.body);
     const result = await Jobs.deleteMany({ name: { $in: req.body.job_names } });
     res.send(result);
   }
