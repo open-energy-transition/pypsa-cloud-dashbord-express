@@ -66,7 +66,7 @@ const paymentVerification = async (req, res) => {
 
   if (isAuthentic) {
 
-    const jobObj = await Jobs.findOne(
+    let jobObj = await Jobs.findOne(
       { order_id: razorpay_order_id },
     );
     // start solving
