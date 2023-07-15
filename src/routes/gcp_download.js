@@ -1,8 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
-const gcp_storage = require("../config/index");
-const gcpController = require("../helpers/gcp");
+const gcpHelpers = require("../helpers/gcp");
 const AdmZip = require("adm-zip");
 
 router.get(
@@ -14,7 +13,7 @@ router.get(
     const order_id = req.query.job_id;
     const file_name = req.query.file_name;
     const filepath = `${user_id}/${order_id}/configs/${file_name}.yaml`;
-    const contents = await gcpController.downloadFile(filepath);
+    const contents = await gcpHelpers.downloadFile(filepath);
     res.send(contents);
   }
 );
@@ -25,9 +24,9 @@ router.get(
   async (req, res) => {
     console.log("getResults");
     const prefix = `${req.user.id}/${req.query.job_id}/solved-networks/`
-    const [blobDetails] = await gcpController.getFiles(prefix);
+    const [blobDetails] = await gcpHelpers.getFiles(prefix);
     const blobNames = blobDetails.map(val => val.name);
-    const results = await gcpController.downloadFiles(blobNames);
+    const results = await gcpHelpers.downloadFiles(blobNames);
     const zip = new AdmZip();
     for (const result of results) {
       zip.addFile(result.name, result.file);
