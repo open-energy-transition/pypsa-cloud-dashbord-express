@@ -56,7 +56,7 @@ router.post(
       const { _, buffer } = file;
       const fileUrl = await gcpHelpers.uploadFile(
         buffer,
-        `${req.user}/${req.query/job_id}/configs/${req.query.file_name}.yaml`
+        `${req.user}/${req.query/req.query.job_id}/configs/${req.query.file_name}.yaml`
       );
       const fname = req.query.file_name;
       await gcpHelpers.updatefileUploadStatus(req.query.job_id, fname);
