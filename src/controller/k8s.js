@@ -28,10 +28,6 @@ async function submitWorkflow(userId, orderId, pypsa_tag) {
       arguments: {
         parameters: [
           {
-            name: "pypsa_tag",
-            value: pypsa_tag,
-          },
-          {
             name: "run_folder_name",
             value: `${userId}/${orderId}`,
           },
@@ -51,6 +47,14 @@ async function submitWorkflow(userId, orderId, pypsa_tag) {
                 templateRef: {
                   name: "pypsa-workflow-template",
                   template: "pypsa-workflow",
+                  arguments: {
+                    parameters: [
+                      {
+                        name: "pypsa_tag",
+                        value: pypsa_tag,
+                      },
+                    ]
+                  }
                 },
               },
             ],
@@ -59,6 +63,8 @@ async function submitWorkflow(userId, orderId, pypsa_tag) {
       ],
     },
   };
+
+  print("Deploying workflow ", body)
   await k8sApi.createNamespacedCustomObject(
     "argoproj.io",
     "v1alpha1",
