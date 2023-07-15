@@ -72,7 +72,7 @@ const paymentVerification = async (req, res) => {
     // start solving
     submitWorkflow.submitWorkflow(
       jobObj.user_id,
-      jobObj.order_id,
+      jobObj._id,
       jobObj.pypsa_version
     );
 
