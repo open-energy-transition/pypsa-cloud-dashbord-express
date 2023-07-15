@@ -15,7 +15,7 @@ const instance = new Razorpay({
 
 async function generateAndUpdateOrderId(jobId, amount) {
   const options = {
-    amount: Number(amount),
+    amount: Number(amount) * 100,
     currency: "INR",
   };
   const order = await instance.orders.create(options);
@@ -65,10 +65,7 @@ const paymentVerification = async (req, res) => {
   console.log(req.body, isAuthentic, "paymentVerification");
 
   if (isAuthentic) {
-
-    let jobObj = await Jobs.findOne(
-      { order_id: razorpay_order_id },
-    );
+    let jobObj = await Jobs.findOne({ order_id: razorpay_order_id });
     // start solving
     submitWorkflow.submitWorkflow(
       jobObj.user_id,
@@ -85,7 +82,6 @@ const paymentVerification = async (req, res) => {
       },
       { new: true }
     );
-
 
     const baseUrl = process.env.BASE_FRONTEND_URL;
 
