@@ -65,6 +65,10 @@ const paymentVerification = async (req, res) => {
   console.log(req.body, isAuthentic, "paymentVerification");
 
   if (isAuthentic) {
+
+    const jobObj = await Jobs.findOne(
+      { order_id: razorpay_order_id },
+    );
     // start solving
     submitWorkflow.submitWorkflow(
       jobObj.user_id,
@@ -72,7 +76,7 @@ const paymentVerification = async (req, res) => {
       jobObj.pypsa_version
     );
 
-    const jobObj = await Jobs.findOneAndUpdate(
+    jobObj = await Jobs.findOneAndUpdate(
       { order_id: razorpay_order_id },
       {
         status: "solving",
