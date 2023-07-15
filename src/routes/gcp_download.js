@@ -29,6 +29,7 @@ router.get(
     const results = await gcpHelpers.downloadFiles(blobNames);
     const zip = new AdmZip();
     for (const result of results) {
+      console.log(result.name, "zipped");
       zip.addFile(result.name, result.file);
     }
     const zip_buffer = zip.toBuffer();
