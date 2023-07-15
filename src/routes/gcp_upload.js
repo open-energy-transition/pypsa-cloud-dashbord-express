@@ -26,20 +26,18 @@ router.post(
   "/version",
   passport.authenticate("jwt_strategy", { session: false }),
   async (req, res, next) => {
-    // const job_obj = await Jobs.updateOne({
-    //   name: req.body.jobName,
-    // });
     try {
       const job_id = req.body.job_id;
       const version = req.body.pypsa_ver;
-      const x = await Jobs.updateOne(
+      const x = await Jobs.findOneAndUpdate(
         { _id: job_id },
         { $set: { pypsa_version: version } },
         { new: true }
       );
+      console.log("change ver ", req.body);
       res.send(200, x);
     } catch {
-      res.send(new error("couldnt change version"));
+      res.status(501).send(new error({ error: "Request falied", code: 501 }));
     }
   }
 );
