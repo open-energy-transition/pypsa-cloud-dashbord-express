@@ -41,7 +41,6 @@ async function updatefileUploadStatus(job_id, file_name) {
     jobObj.bundle_config === true &&
     jobObj.powerplantmatching_config === true
   ) {
-    // const cost = await getCosts(jobObj.user_id, job_id);
     const x = await Jobs.updateOne(
       { _id: new ObjectId(job_id) },
       { $set: { status: "pending" } },
@@ -57,7 +56,10 @@ async function getCosts(userId, jobId) {
   const file = await downloadFile(configPath);
   const config = yaml.load(file);
 
-  return job.costs;
+  // add some cost function here
+  const scenario = config.scenario;
+  const numberOfNetworks = Object.values(scenario).reduce((acc, val) => acc + val.length, 0);
+  return numberOfNetworks * 100;
 }
 
 async function copyDefaultConfig(user_id, order_id, file_name) {

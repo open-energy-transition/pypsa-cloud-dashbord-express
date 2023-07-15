@@ -3,6 +3,7 @@ const passport = require("passport");
 const Razorpay = require("razorpay");
 const Jobs = require("../models/Jobs");
 const crypto = require("crypto");
+const { calculateCost } = require("../helpers/utils");
 
 const submitWorkflow = require("../controller/k8s");
 
@@ -34,10 +35,9 @@ router.get(
   "/getCost",
   passport.authenticate("jwt_strategy", { session: false }),
   //   calculate cost here
-  async (req, res, next) => {
+  async (req, res) => {
     try {
-      const cost = 400;
-
+      const cost = await calculateCost(req.user.id, req.query.job_id);
       const orderObj = await generateAndUpdateOrderId(req.query.job_id, cost);
 
       res
