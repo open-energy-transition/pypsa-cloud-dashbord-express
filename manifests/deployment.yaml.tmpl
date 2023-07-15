@@ -25,7 +25,10 @@ spec:
         resources:
           limits:
             memory: "1Gi"
-            cpu: "500m"
+            cpu: "600m"
+        env:
+          name: BASE_BACKEND_URL
+          value: https://api.pypsa-earth-dashboard.com
         envFrom:
         - secretRef:
             name: backend
