@@ -21,6 +21,7 @@ async function submitWorkflow(userId, orderId, pypsa_tag) {
     kind: "Workflow",
     metadata: {
       name: `pypsa-workflow-${uuidv4()}`,
+      namespace: "default"
     },
     spec: {
       serviceAccountName: "pypsa-argo",
